@@ -17,8 +17,8 @@ API皆使用REST風格設計
 #### 回傳格式範例
 ```json
 {   
-    "code":1           
-    "msg":"success"    
+    "code":1,           
+    "msg":"success",    
     "data": {
         "id": 1,
         "name": "硬體部門",
