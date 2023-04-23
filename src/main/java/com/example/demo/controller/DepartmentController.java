@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dept")
+@CrossOrigin
 public class DepartmentController {
     @Autowired
     DepartmentService departmentService;

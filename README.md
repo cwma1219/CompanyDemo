@@ -76,6 +76,10 @@ API皆使用REST風格設計
 ```java!
 "/prod"
 ```
+- 刪除產品
+```java!
+"/prod"
+```
 - 修改產品
 ```java!
 "/prod"

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CompanyDemo</title>
+    <script src="js/axios-0.18.0.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vuex.js"></script>
+</head>
+<body id ="body">
+    <div v-show="false">
+
+        <div>
+            <form id="login" @submit.prevent="handleSubmit">
+                帳號<input type="text" name="username" v-model="username"><br>
+                密碼<input type="password" name="password" v-model="password"><br>
+                <button>登入</button>
+            </form>
+        </div>
+
+
+        <div>
+            <table border="1" ,cellspacing="0" ,id="staff" ,v-model="staff">
+                <tr>
+                    <th>姓名</th>
+                    <th>年齡</th>
+                    <th>性別</th>
+                    <th>信箱</th>
+                    <th>部門</th>
+                    <th>職位</th>
+                    <th>入職日期</th>
+                </tr>
+            </table>
+        </div>
+        <div id="findStaff">
+            <input type="button" value="查詢員工">
+        </div>
+    </div>
+</body>
+
+<script>
+    const store = new Vuex.Store({
+        state:{
+            token:""
+        },
+        mutations:{
+         setToken(state,payload){
+             state.token = payload;
+         }},
+        actions:{
+            empty(state){
+                if(state.token =="")
+                    return false;
+                else
+                    return true;
+            }
+        },
+        getters:{
+            getToken(state){
+                return state.token;
+            }
+        }
+    })
+    new Vue({
+        el:"#login",
+        data:{
+            username:"",
+            password:""
+        },
+        methods:{
+            handleSubmit:function(){
+                var obj = {username:this.username,password:this.password}
+                var json = JSON.stringify(obj);
+                var config = {
+                    headers:{
+                        'Content-Type': 'application/json',
+                    }
+                }
+                axios.post("http://localhost:8080/login",json,config).then(result=>{
+                    if(result.data.code == 1){
+                        store.commit("setToken",result.data.data);
+                    }
+                })
+            }
+        }
+    })
+
+</script>
+</html>

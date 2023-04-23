@@ -12,6 +12,7 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 @RestController
 @RequestMapping("/staff")
+@CrossOrigin
 public class StaffController {
     @Autowired
     StaffService staffService;
