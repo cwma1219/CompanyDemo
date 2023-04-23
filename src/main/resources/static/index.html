@@ -101,22 +101,57 @@
             </form>
         </div>
     </div>
-    <div>
-
-    </div>
 
     <div id="prodOption" style="display: none">
-        <button>查詢產品</button>
-        <button>刪除產品</button>
-        <button>新增產品</button>
-        <button>修改產品</button>
+        <button v-on:click="showFindProd()">查詢產品</button>
+        <button v-on:click="showDeleteProd()">刪除產品</button>
+        <button v-on:click="showInsertProd()">新增產品</button>
+        <button v-on:click="showModifyProd()">修改產品</button>
+        <br>
+        <br>
     </div>
 
     <div id="staffOption" style="display: none">
-        <button>查詢員工</button>
-        <button>刪除員工</button>
-        <button>新增員工</button>
-        <button>修改員工</button>
+        <button v-on:click="showFindStaff()">查詢員工</button>
+        <button v-on:click="showDeleteStaff()">刪除員工</button>
+        <button v-on:click="showInsertStaff()">新增員工</button>
+        <button v-on:click="showModifyStaff()">修改員工</button>
+        <br>
+        <br>
+        <div id="findStaff" style="display: none">
+            <form @submit.prevent="staffFind">
+                姓名<input v-model="name">
+                性別<input v-model="gender">
+                部門ID<input v-model="deptId">
+                頁數<input v-model="page">
+                顯示數量<input v-model="pageSize">
+                <button>送出</button>
+            </form>
+            <table border="1"  cellspacing = 0 v-model="emps">
+                <tr>
+                    <th>姓名</th>
+                    <th>性別</th>
+                    <th>身分證</th>
+                    <th>電子信箱</th>
+                    <th>職位</th>
+                    <th>入值日期</th>
+                </tr>
+                <tr v-for="emp in emps">
+                    <td>{{emp.name}}</td>
+                    <td>
+                        <span v-if="emp.gender == 0">男</span>
+                        <span v-else>女</span>
+                    </td>
+                    <td>{{emp.identity}}</td>
+                    <td>{{emp.email}}</td>
+                    <td>
+                        <span v-if="emp.position == 1">主管</span>
+                        <span v-else>員工</span>
+                    </td>
+                    <td>{{emp.entrydate}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 
@@ -241,6 +276,7 @@
                 axios.get(`http://localhost:8080/dept/${this.deptId}/staff`,config).then((result)=>{
                     if(result.data.code == 1){
                         this.emps = result.data.data;
+                        console.log(this.emps)
                     }
                     else{
                         alert(result.data.msg)
@@ -344,6 +380,56 @@
                         alert(result.data.msg)
                     }
                 })
+            }
+        }
+    })
+    new Vue({
+        el:"#prodOption",
+        data:{
+            name:"",
+            deptId:""
+        },
+        methods:{
+
+        }
+    })
+    new Vue({
+        el:"#staffOption",
+        data:{
+            emps:[],
+            name:"",
+            deptId:"",
+            gender:"",
+            page:"",
+            pageSize:""
+        },
+        methods:{
+            showFindStaff:function (){
+                document.getElementById("findStaff").style.display="inline";
+            },
+            staffFind:function (){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                url = "http://localhost:8080/staff/"
+                if(this.name !="")
+                    url+=`?name=${this.name}`
+                if(this.deptId !="")
+                    url+=`?deptId=${this.deptId}`
+                if(this.gender !=""){
+                    url+=`?gender=${this.gender}`
+                }
+                if(this.page !="")
+                    url+=`?page=${this.page}`
+                if(this.pageSize !="")
+                    url+=`?pageSize=${this.pageSize}`
+                console.log(url)
+                 axios.get(url,config).then((result)=>{
+                     this.emps = result.data.data.data;
+                     console.log(this.emps)
+                 })
             }
         }
     })
