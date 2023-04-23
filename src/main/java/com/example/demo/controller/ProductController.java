@@ -6,12 +6,14 @@ import com.example.demo.model.pojo.Result;
 import com.example.demo.model.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/prod")
 @CrossOrigin
+@RequestMapping("/prod")
+
 public class ProductController {
     @Autowired
     ProductService productService;

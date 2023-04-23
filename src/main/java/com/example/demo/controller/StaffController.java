@@ -7,12 +7,14 @@ import com.example.demo.model.pojo.Staff;
 import com.example.demo.model.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.websocket.server.PathParam;
 import java.util.List;
 @RestController
-@RequestMapping("/staff")
 @CrossOrigin
+@RequestMapping("/staff")
+
 public class StaffController {
     @Autowired
     StaffService staffService;

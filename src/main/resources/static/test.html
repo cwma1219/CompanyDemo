@@ -18,58 +18,74 @@
         </form>
     </div>
     <div id="showOptions" style="display: none">
-      <button id="dept" v-on:click="sDept()">部門</button>
-      <button id="prod" v-on:click="sProd()">產品</button>
-      <button id="staff" v-on:click="sStaff()">員工</button>
-      <br>
-      <div id="showDept" style="display: none">
-        <button>查詢部門</button>
-        <button>查詢部門員工</button>
-        <button>查詢部門產品</button>
-        <button>刪除部門</button>
-        <button>新增部門</button>
-        <button>修改部門</button>
-      </div>
+        <button id="dept" v-on:click="sDept()">部門</button>
+        <button id="prod" v-on:click="sProd()">產品</button>
+        <button id="staff" v-on:click="sStaff()">員工</button>
+        <br>
+        <div id="showDept" style="display: none" >
+            <button v-on:click="findDept()">查詢部門</button>
 
-      <div id="showStaff" style="display: none">
-        <button>查詢員工</button>
-        <button>刪除員工</button>
-        <button>新增員工</button>
-        <button>修改員工</button>
-      </div>
+            <button>查詢部門員工</button>
+            <button>查詢部門產品</button>
+            <button>刪除部門</button>
+            <button>新增部門</button>
+            <button>修改部門</button>
+            <br>
+            <table border="1"  cellspacing = 0 v-model="depts">
+                <tr>
+                    <th>部門編號</th>
+                    <th>部門名稱</th>
+                </tr>
+                <tr v-for="dept in depts">
+                    <td>{{dept.id}}</td>
+                    <td>{{dept.name}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="showStaff" style="display: none">
+            <button>查詢員工</button>
+            <button>刪除員工</button>
+            <button>新增員工</button>
+            <button>修改員工</button>
+        </div>
 
 
-      <div id="showProd" style="display: none">
-        <button>查詢產品</button>
-        <button>刪除產品</button>
-        <button>新增產品</button>
-        <button>修改產品</button>
-      </div>
+        <div id="showProd" style="display: none">
+            <button>查詢產品</button>
+            <button>刪除產品</button>
+            <button>新增產品</button>
+            <button>修改產品</button>
+        </div>
     </div>
 </div>
 </body>
 
 <script>
-  const store = new Vuex.Store({
-    state: {
-      token: ""
-    },
-    mutations: {
-      setToken(state, payload) {
-        state.token = payload;
-      }
-    },
-    getters: {
-      getToken(state) {
-        return state.token;
-      }
-    }
-  })
+    const store = new Vuex.Store({
+        state: {
+            token: ""
+        },
+        mutations: {
+            setToken(state, payload) {
+                state.token = payload;
+            }
+        },
+        getters: {
+            getToken(state) {
+                return state.token;
+            }
+        }
+    })
     new Vue({
         el: "#d1",
         data: {
             username: "",
             password: "",
+            id:"",
+            depts:[],
+            staff:[],
+            prods:[]
         },
         methods: {
             handleSubmit: function () {
@@ -82,43 +98,54 @@
                 }
                 axios.post("http://localhost:8080/login", json, config).then(result => {
                     if (result.data.code == 1) {
-                      store.commit("setToken",result.data.data)
-                      document.getElementById("showOptions").style.display = "inline";
-                      document.getElementById("loginTable").style.display = "none";
+                        store.commit("setToken",result.data.data)
+                        document.getElementById("showOptions").style.display = "inline";
+                        document.getElementById("loginTable").style.display = "none";
 
                     }
 
                 })
             },
             sDept: () => {
-               if(document.getElementById("showDept").style.display === "none"){
-                  document.getElementById("showDept").style.display = "inline";
-                  document.getElementById("showStaff").style.display = "none";
-                  document.getElementById("showProd").style.display = "none";
-                  //console.log(store.getters.getToken)
-               }
-               else
-                 document.getElementById("showDept").style.display = "none"
+                if(document.getElementById("showDept").style.display === "none"){
+                    document.getElementById("showDept").style.display = "inline";
+                    document.getElementById("showStaff").style.display = "none";
+                    document.getElementById("showProd").style.display = "none";
+                    //console.log(store.getters.getToken)
+                }
+                else
+                    document.getElementById("showDept").style.display = "none"
 
-          },
+            },
             sStaff: () => {
-             if(document.getElementById("showStaff").style.display === "none"){
-                document.getElementById("showStaff").style.display = "inline"
-                document.getElementById("showDept").style.display = "none"
-                document.getElementById("showProd").style.display = "none"
-             }
-             else
-               document.getElementById("showStaff").style.display = "none"
-          },
+                if(document.getElementById("showStaff").style.display === "none"){
+                    document.getElementById("showStaff").style.display = "inline"
+                    document.getElementById("showDept").style.display = "none"
+                    document.getElementById("showProd").style.display = "none"
+                }
+                else
+                    document.getElementById("showStaff").style.display = "none"
+            },
             sProd: () => {
-             if(document.getElementById("showProd").style.display === "none"){
-                document.getElementById("showProd").style.display = "inline";
-                document.getElementById("showStaff").style.display = "none";
-                document.getElementById("showDept").style.display = "none";
-             }
-             else
-               document.getElementById("showProd").style.display = "none"
-          },
+                if(document.getElementById("showProd").style.display === "none"){
+                    document.getElementById("showProd").style.display = "inline";
+                    document.getElementById("showStaff").style.display = "none";
+                    document.getElementById("showDept").style.display = "none";
+                }
+                else
+                    document.getElementById("showProd").style.display = "none"
+            },
+            findDept:()=>{
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.get("http://localhost:8080/dept",config).then((result)=>{
+                    this.depts = result.data.data;
+                    console.log(this.depts)
+                })
+            }
         }
     })
 

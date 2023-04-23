@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @RestController
 @CrossOrigin
 public class LoginController {
@@ -28,6 +29,6 @@ public class LoginController {
             String jwt = JwtUtils.getJwt(claim);
             return Result.success(jwt);
         }
-        return Result.error("Error");
+        return Result.error("帳號或密碼錯誤");
     }
 }

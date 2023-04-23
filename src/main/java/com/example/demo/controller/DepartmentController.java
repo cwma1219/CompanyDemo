@@ -8,12 +8,14 @@ import com.example.demo.model.pojo.Staff;
 import com.example.demo.model.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/dept")
 @CrossOrigin
+@RequestMapping("/dept")
+
 public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
@@ -44,6 +46,7 @@ public class DepartmentController {
 
     @PostMapping
     public Result dept(@RequestBody Department dept){
+        System.out.println(dept);
         departmentService.insert(dept);
         return Result.success();
     }

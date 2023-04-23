@@ -7,83 +7,345 @@
     <script src="js/vue.js"></script>
     <script src="js/vuex.js"></script>
 </head>
-<body id ="body">
-    <div v-show="false">
+<body>
+    <div id="loginTable" style="display: inline">
+        <form id="login" @submit.prevent="handleSubmit">
+            帳號<input type="text" name="username" v-model="username"><br>
+            密碼<input type="password" name="password" v-model="password"><br>
+            <button>登入</button>
+        </form>
+    </div>
+    <div id="showOption" style="display: none">
+        <button id="dept" v-on:click="sDept()">部門</button>
+        <button id="prod" v-on:click="sProd()">產品</button>
+        <button id="staff" v-on:click="sStaff()">員工</button>
+    </div>
 
-        <div>
-            <form id="login" @submit.prevent="handleSubmit">
-                帳號<input type="text" name="username" v-model="username"><br>
-                密碼<input type="password" name="password" v-model="password"><br>
-                <button>登入</button>
-            </form>
-        </div>
-
-
-        <div>
-            <table border="1" ,cellspacing="0" ,id="staff" ,v-model="staff">
+    <br>
+    <div id="deptOption" style="display: none">
+        <button v-on:click="findDept()">查詢全部部門</button>
+        <button v-on:click="showDeptStaff()">查詢部門員工</button>
+        <button v-on:click="showDeptProd()">查詢部門產品</button>
+        <button v-on:click="showDelteDept()">刪除部門</button>
+        <button v-on:click="showInsertDept()">新增部門</button>
+        <button v-on:click="showModifyDept()">修改部門</button>
+        <br>
+        <br>
+        <table id="allDept" style="display: none" border="1"  cellspacing = 0 v-model="depts">
+            <tr>
+                <th>部門編號</th>
+                <th>部門名稱</th>
+            </tr>
+            <tr v-for="dept in depts">
+                <td>{{dept.id}}</td>
+                <td>{{dept.name}}</td>
+            </tr>
+        </table>
+        <div id="deptStaff"  style="display: none" >
+            輸入要查詢的部門編號<input v-model="deptId">
+            <button v-on:click="findDeptStaff()">送出</button>
+            <table border="1"  cellspacing = 0 v-model="emps">
                 <tr>
                     <th>姓名</th>
-                    <th>年齡</th>
                     <th>性別</th>
-                    <th>信箱</th>
-                    <th>部門</th>
+                    <th>身分證</th>
+                    <th>電子信箱</th>
                     <th>職位</th>
-                    <th>入職日期</th>
+                    <th>入值日期</th>
+                </tr>
+                <tr v-for="emp in emps">
+                    <td>{{emp.name}}</td>
+                    <td>
+                        <span v-if="emp.gender == 0">男</span>
+                        <span v-else>女</span>
+                    </td>
+                    <td>{{emp.identity}}</td>
+                    <td>{{emp.email}}</td>
+                    <td>
+                        <span v-if="emp.position == 1">主管</span>
+                        <span v-else>員工</span>
+                    </td>
+                    <td>{{emp.entrydate}}</td>
                 </tr>
             </table>
         </div>
-        <div id="findStaff">
-            <input type="button" value="查詢員工">
+        <div id="deptProd"  style="display: none" >
+            輸入要查詢的部門編號<input v-model="deptId">
+            <button v-on:click="findDeptProd()">送出</button>
+            <table border="1"  cellspacing = 0 v-model="prods">
+                <tr>
+                    <th>產品編號</th>
+                    <th>產品名稱</th>
+                </tr>
+                <tr v-for="prod in prods">
+                    <td>{{prod.id}}</td>
+                    <td>{{prod.name}}</td>
+                </tr>
+            </table>
         </div>
+        <div id="deleteDept" style="display: none">
+            輸入要刪除的部門ID:<input v-model="deptId">
+            <button v-on:click="deleteDept()">送出</button>
+        </div>
+        <div id = insertDept style="display: none">
+            <form @submit.prevent="deptInsert">
+                部門名稱<input type="text" name="username" v-model="deptName"><br>
+                <button>新增</button>
+            </form>
+        </div>
+        <div id = modifyDept style="display: none">
+            <form @submit.prevent="deptModify">
+                修改部門ID:<input v-model="deptId">
+                修改部門名稱:<input v-model="deptName">
+                <button>修改</button>
+            </form>
+        </div>
+    </div>
+    <div>
+
+    </div>
+
+    <div id="prodOption" style="display: none">
+        <button>查詢產品</button>
+        <button>刪除產品</button>
+        <button>新增產品</button>
+        <button>修改產品</button>
+    </div>
+
+    <div id="staffOption" style="display: none">
+        <button>查詢員工</button>
+        <button>刪除員工</button>
+        <button>新增員工</button>
+        <button>修改員工</button>
     </div>
 </body>
 
 <script>
+    Vue.config.silent = true
     const store = new Vuex.Store({
-        state:{
-            token:""
+        state: {
+            token: ""
         },
-        mutations:{
-         setToken(state,payload){
-             state.token = payload;
-         }},
-        actions:{
-            empty(state){
-                if(state.token =="")
-                    return false;
-                else
-                    return true;
+        mutations: {
+            setToken(state, payload) {
+                state.token = payload;
             }
         },
-        getters:{
-            getToken(state){
+        getters: {
+            getToken(state) {
                 return state.token;
             }
         }
     })
     new Vue({
-        el:"#login",
-        data:{
-            username:"",
-            password:""
+        el: "#loginTable",
+        data: {
+            username: "",
+            password: "",
         },
-        methods:{
-            handleSubmit:function(){
-                var obj = {username:this.username,password:this.password}
+        methods: {
+            handleSubmit: function () {
+                var obj = {username: this.username, password: this.password}
                 var json = JSON.stringify(obj);
                 var config = {
-                    headers:{
+                    headers: {
                         'Content-Type': 'application/json',
                     }
                 }
-                axios.post("http://localhost:8080/login",json,config).then(result=>{
-                    if(result.data.code == 1){
-                        store.commit("setToken",result.data.data);
+                axios.post("http://localhost:8080/login", json, config).then(result => {
+                    if (result.data.code == 1) {
+                        store.commit("setToken",result.data.data)
+                        document.getElementById("showOption").style.display = "inline";
+                        document.getElementById("loginTable").style.display = "none";
+                    }
+                    else{
+                        alert(result.data.msg)
                     }
                 })
             }
         }
     })
-
+    new Vue({
+        el:"#showOption",
+        data:{
+        },
+        methods: {
+            sDept: () => {
+                if(document.getElementById("deptOption").style.display === "none"){
+                    document.getElementById("deptOption").style.display = "inline"
+                    document.getElementById("staffOption").style.display = "none"
+                    document.getElementById("prodOption").style.display = "none"
+                }
+            },
+            sProd: () => {
+                if(document.getElementById("prodOption").style.display === "none"){
+                    document.getElementById("prodOption").style.display = "inline"
+                    document.getElementById("staffOption").style.display = "none"
+                    document.getElementById("deptOption").style.display = "none"
+                }
+            },
+            sStaff: () => {
+                if(document.getElementById("staffOption").style.display === "none"){
+                    document.getElementById("staffOption").style.display = "inline";
+                    document.getElementById("deptOption").style.display = "none";
+                    document.getElementById("prodOption").style.display = "none";
+                }
+            }
+        }
+    })
+    new Vue({
+        el:"#deptOption",
+        data:{
+            depts:[],
+            emps:[],
+            prods:[],
+            deptId:"",
+            deptName:""
+        },
+        methods:{
+            findDept:function(){
+                document.getElementById("insertDept").style.display="none";
+                document.getElementById("modifyDept").style.display="none";
+                document.getElementById("allDept").style.display="inline";
+                document.getElementById("deptStaff").style.display="none";
+                document.getElementById("deptProd").style.display="none";
+                document.getElementById("deleteDept").style.display="none";
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.get("http://localhost:8080/dept",config).then((result)=>{
+                    if(result.data.code == 1){
+                        this.depts = result.data.data;
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showDeptStaff:function(){
+                document.getElementById("insertDept").style.display="none";
+                document.getElementById("modifyDept").style.display="none";
+                document.getElementById("allDept").style.display="none";
+                document.getElementById("deptStaff").style.display="inline";
+                document.getElementById("deptProd").style.display="none";
+                document.getElementById("deleteDept").style.display="none";
+            },
+            findDeptStaff:function(){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.get(`http://localhost:8080/dept/${this.deptId}/staff`,config).then((result)=>{
+                    if(result.data.code == 1){
+                        this.emps = result.data.data;
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showDeptProd:function(){
+                document.getElementById("insertDept").style.display="none";
+                document.getElementById("modifyDept").style.display="none";
+                document.getElementById("allDept").style.display="none";
+                document.getElementById("deptStaff").style.display="none";
+                document.getElementById("deptProd").style.display="inline";
+                document.getElementById("deleteDept").style.display="none";
+            },
+            findDeptProd:function(){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.get(`http://localhost:8080/dept/${this.deptId}/prod`,config).then((result)=>{
+                    if(result.data.code == 1){
+                        this.prods = result.data.data;
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showDelteDept:function(){
+                document.getElementById("insertDept").style.display="none";
+                document.getElementById("modifyDept").style.display="none";
+                document.getElementById("allDept").style.display="none";
+                document.getElementById("deptStaff").style.display="none";
+                document.getElementById("deptProd").style.display="none";
+                document.getElementById("deleteDept").style.display="inline";
+            },
+            deleteDept:function (){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.delete(`http://localhost:8080/dept/${this.deptId}`,config).then((result)=>{
+                    if(result.data.code == 1){
+                        alert("刪除成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showInsertDept:function(){
+                document.getElementById("insertDept").style.display="inline";
+                document.getElementById("modifyDept").style.display="none";
+                document.getElementById("allDept").style.display="none";
+                document.getElementById("deptStaff").style.display="none";
+                document.getElementById("deptProd").style.display="none";
+                document.getElementById("deleteDept").style.display="none";
+            },
+            deptInsert:function (){
+                var obj = {name: this.deptName}
+                var json = JSON.stringify(obj);
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                }
+                axios.post(`http://localhost:8080/dept`,json,config).then((result)=>{
+                    if(result.data.code == 1){
+                        alert("新增成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showModifyDept:function(){
+                document.getElementById("insertDept").style.display="none";
+                document.getElementById("modifyDept").style.display="inline";
+                document.getElementById("allDept").style.display="none";
+                document.getElementById("deptStaff").style.display="none";
+                document.getElementById("deptProd").style.display="none";
+                document.getElementById("deleteDept").style.display="none";
+            },
+            deptModify:function (){
+                var obj = {id:this.deptId,name: this.deptName}
+                var json = JSON.stringify(obj);
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                }
+                axios.put(`http://localhost:8080/dept`,json,config).then((result)=>{
+                    if(result.data.code == 1){
+                        alert("修改成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            }
+        }
+    })
 </script>
 </html>
