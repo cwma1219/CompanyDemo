@@ -33,20 +33,17 @@ public class StaffController {
     }
     @PostMapping
     public Result staff (@RequestBody Staff staff){
-        System.out.println(staff);
         staffService.insert(staff);
         return Result.success();
     }
     @PutMapping
     public Result modifyStaff (@RequestBody Staff staff){
-        System.out.println(staff);
         staffService.modify(staff);
         return Result.success();
     }
     @AuthCheckApi
     @DeleteMapping("/{id}")
     public Result deleteStaff(@PathVariable Integer id){
-        System.out.println(id);
         staffService.deleteById(id);
         return Result.success();
     }

@@ -21,7 +21,6 @@ public class DepartmentController {
     DepartmentService departmentService;
     @GetMapping("/{id}")
     public Result dept(@PathVariable Integer id){
-        System.out.println(id);
         Department dept = departmentService.findById(id);
         return Result.success(dept);
     }
@@ -46,7 +45,6 @@ public class DepartmentController {
 
     @PostMapping
     public Result dept(@RequestBody Department dept){
-        System.out.println(dept);
         departmentService.insert(dept);
         return Result.success();
     }

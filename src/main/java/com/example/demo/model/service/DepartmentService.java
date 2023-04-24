@@ -37,7 +37,6 @@ public class DepartmentService {
     }
     public void modify(Department dept){
         dept.setUpdateTime(LocalDateTime.now());
-        System.out.println(dept);
         departmentRepository.save(dept);
 
     }
