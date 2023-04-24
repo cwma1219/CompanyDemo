@@ -143,10 +143,11 @@
         </div>
 
         <div id="modifyProd" style="display: none">
-            <form @submit.prevent="insertProd">
+            <form @submit.prevent="modifyProd">
                 產品編號<input v-model="prodId">
                 產品名稱<input v-model="name">
                 部門編號<input v-model="deptId">
+                <button>修改</button>
             </form>
         </div>
 
@@ -566,8 +567,9 @@
                     }
                 };
                 var obj = {
+                    id:this.prodId,
                     name:this.name,
-                    deptId:this.deptId
+                    departmentId:this.deptId
                 };
                 var json = JSON.stringify(obj);
                 axios.put(`http://localhost:8080/prod`,json,config).then(result=>{
@@ -623,7 +625,6 @@
                     url+=`&page=${this.page}`
                 if(this.pageSize !="")
                     url+=`&pageSize=${this.pageSize}`
-                alert(url)
                  axios.get(url,config).then((result)=>{
                      this.emps = result.data.data.data;
                  })
@@ -693,29 +694,29 @@
                 var obj = {
                     id:this.staffId,
                 }
-                if(this.username == "")
+                if(this.username != "")
                     obj.username = this.username
-                if(this.password == "")
+                if(this.password != "")
                     obj.password = this.password
 
-                if(this.email == "")
+                if(this.email != "")
                     obj.email = this.email
 
-                if(this.name == "")
+                if(this.name != "")
                     obj.name = this.name
 
-                if(this.identity == "")
+                if(this.identity != "")
                     obj.identity = this.identity
 
-                if(this.deptId == "")
-                    obj.deptId = this.deptId
+                if(this.deptId != "")
+                    obj.departmentId = this.deptId
 
-                if(this.gender == "")
+                if(this.gender != "")
                     obj.gender = this.gender
 
-                if(this.entrydate == "")
+                if(this.entrydate != "")
                     obj.entrydate = this.entrydate
-                if(this.position == "")
+                if(this.position != "")
                     obj.position = this.position
 
 

@@ -59,8 +59,28 @@ public class StaffService {
         staffRepository.save(staff);
     }
     public void modify(Staff staff){
-        staff.setUpdate_time(LocalDateTime.now());
-        staffRepository.save(staff);
+        Staff emp = staffRepository.findById(staff.getId()).get();
+        if(staff.getName()!=null)
+            emp.setName(staff.getName());
+        if(staff.getUsername()!=null)
+            emp.setUsername(staff.getUsername());
+        if(staff.getPassword()!=null)
+            emp.setPassword(staff.getPassword());
+        if(staff.getIdentity()!=null)
+            emp.setIdentity(staff.getIdentity());
+        if(staff.getEmail()!=null)
+            emp.setEmail(staff.getEmail());
+        if(staff.getPosition()!=null)
+            emp.setPosition(staff.getPosition());
+        if(staff.getGender()!=null)
+            emp.setGender(staff.getGender());
+        if(staff.getDepartmentId()!=null)
+            emp.setDepartmentId(staff.getDepartmentId());
+        if(staff.getEntrydate()!=null)
+            emp.setEntrydate(staff.getEntrydate());
+        System.out.println(staff.getName());
+        emp.setUpdate_time(LocalDateTime.now());
+        staffRepository.save(emp);
     }
     @Transactional
     public void deleteById(Integer id){

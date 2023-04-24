@@ -36,8 +36,11 @@ public class DepartmentService {
 
     }
     public void modify(Department dept){
-        dept.setUpdateTime(LocalDateTime.now());
-        departmentRepository.save(dept);
+        Department department = departmentRepository.findById(dept.getId()).get();
+        if(dept.getName()!=null)
+            department.setName(dept.getName());
+        department.setUpdateTime(LocalDateTime.now());
+        departmentRepository.save(department);
 
     }
     public List<Staff> findStaff(Integer id){

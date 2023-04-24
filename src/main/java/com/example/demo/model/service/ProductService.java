@@ -53,8 +53,15 @@ public class ProductService {
         productRepository.save(prod);
     }
     public void modify(Product prod){
-        prod.setUpdateTime(LocalDateTime.now());
-        productRepository.save(prod);
+        Product product = productRepository.findById(prod.getId()).get();
+
+        if(prod.getName()!=null)
+            product.setName(prod.getName());
+        if(prod.getDepartmentId()!=null)
+            product.setDepartmentId(prod.getDepartmentId());
+
+        product.setUpdateTime(LocalDateTime.now());
+        productRepository.save(product);
     }
     @Transactional
     public void deleteById(Integer id){

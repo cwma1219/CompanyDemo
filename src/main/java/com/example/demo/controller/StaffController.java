@@ -38,6 +38,7 @@ public class StaffController {
     }
     @PutMapping
     public Result modifyStaff (@RequestBody Staff staff){
+        System.out.println(staff);
         staffService.modify(staff);
         return Result.success();
     }
