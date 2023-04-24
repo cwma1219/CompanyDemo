@@ -109,6 +109,47 @@
         <button v-on:click="showModifyProd()">修改產品</button>
         <br>
         <br>
+        <div id="findProd" style="display: none">
+            <form @submit.prevent="prodFind">
+                產品名稱<input v-model="name"><br>
+                負責部門<input v-model="deptId"><br>
+                頁數<input v-model="page"><br>
+                顯示數量<input v-model="pageSize"><br>
+                <button>查詢</button>
+            </form>
+            <table border="1"  cellspacing = 0 v-model="prods">
+                <tr>
+                    <th>產品編號</th>
+                    <th>產品名稱</th>
+                </tr>
+                <tr v-for="prod in prods">
+                    <td>{{prod.id}}</td>
+                    <td>{{prod.name}}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="deleteProd" style="display: none">
+            產品ID<input v-model="prodId">
+            <button v-on:click="prodDelete">刪除</button>
+        </div>
+
+        <div id="insertProd" style="display: none">
+            <form @submit.prevent="insertProd">
+                產品名稱<input v-model="name">
+                部門編號<input v-model="deptId">
+                <button>新增</button>
+            </form>
+        </div>
+
+        <div id="modifyProd" style="display: none">
+            <form @submit.prevent="insertProd">
+                產品編號<input v-model="prodId">
+                產品名稱<input v-model="name">
+                部門編號<input v-model="deptId">
+            </form>
+        </div>
+
     </div>
 
     <div id="staffOption" style="display: none">
@@ -120,11 +161,11 @@
         <br>
         <div id="findStaff" style="display: none">
             <form @submit.prevent="staffFind">
-                姓名<input v-model="name">
-                性別<input v-model="gender">
-                部門ID<input v-model="deptId">
-                頁數<input v-model="page">
-                顯示數量<input v-model="pageSize">
+                姓名<input v-model="name"><br>
+                性別<input v-model="gender"><br>
+                部門ID<input v-model="deptId"><br>
+                頁數<input v-model="page"><br>
+                顯示數量<input v-model="pageSize"><br>
                 <button>送出</button>
             </form>
             <table border="1"  cellspacing = 0 v-model="emps">
@@ -151,6 +192,49 @@
                     <td>{{emp.entrydate}}</td>
                 </tr>
             </table>
+        </div>
+        <div id="deleteStaff" style="display: none">
+            輸入要刪除的員工編號<input value="deleteStaff" v-model="staffId">
+            <button v-on:click="staffDelete">刪除</button>
+        </div>
+        <div id="insertStaff" style="display: none">
+                <form @submit.prevent="staffInsert">
+                    帳號<input type="text" v-model="username"><br>
+                    密碼<input type="password" v-model="password"><br>
+                    姓名<input type="text" v-model="name"><br>
+                    身分證<input type="text" v-model="identity"><br>
+                    電子信箱<input type="text" v-model="email"><br>
+                    職位<select v-model="position">
+                        <option value="">請選擇</option>
+                        <option value="0">員工</option>
+                        <option value="1">主管</option>
+                       </select>{{position}}
+                    <br>
+                    性別<input type="text" v-model="gender"><br>
+                    部門<input type="text" v-model="deptId"><br>
+                    入職時間<input type="date" v-model="entrydate"><br>
+                    <button>新增</button>
+                </form>
+        </div>
+        <div id="modifyStaff" style="display: none">
+            <form @submit.prevent="staffModify">
+                員工編號<input type="text" v-model="staffId"><br>
+                帳號<input type="text" v-model="username"><br>
+                密碼<input type="password" v-model="password"><br>
+                姓名<input type="text" v-model="name"><br>
+                身分證<input type="text" v-model="identity"><br>
+                電子信箱<input type="text" v-model="email"><br>
+                職位<select v-model="position">
+                <option value="">請選擇</option>
+                <option value="0">員工</option>
+                <option value="1">主管</option>
+            </select>
+                <br>
+                性別<input type="text" v-model="gender"><br>
+                部門<input type="text" v-model="deptId"><br>
+                入職時間<input type="date" v-model="entrydate"><br>
+                <button>修改</button>
+            </form>
         </div>
     </div>
 </body>
@@ -386,19 +470,130 @@
     new Vue({
         el:"#prodOption",
         data:{
+            prodId:"",
             name:"",
-            deptId:""
+            deptId:"",
+            prods:[],
+            page:"",
+            pageSize:""
         },
         methods:{
+            showFindProd:function(){
+                document.getElementById("findProd").style.display="inline";
+                document.getElementById("deleteProd").style.display="none";
+                document.getElementById("insertProd").style.display="none";
+                document.getElementById("modifyProd").style.display="none";
+            },
+            showDeleteProd:function(){
+                document.getElementById("findProd").style.display="none";
+                document.getElementById("deleteProd").style.display="inline";
+                document.getElementById("insertProd").style.display="none";
+                document.getElementById("modifyProd").style.display="none";
+            },
+            showInsertProd:function(){
+                document.getElementById("findProd").style.display="none";
+                document.getElementById("deleteProd").style.display="none";
+                document.getElementById("insertProd").style.display="inline";
+                document.getElementById("modifyProd").style.display="none";
+            },
+            showModifyProd:function(){
+                document.getElementById("findProd").style.display="none";
+                document.getElementById("deleteProd").style.display="none";
+                document.getElementById("insertProd").style.display="none";
+                document.getElementById("modifyProd").style.display="inline";
+            },
+            prodFind:function (){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                var url = "http://localhost:8080/prod/?"
+                if(this.name !="")
+                    url+=`&name=${this.name}`
+                if(this.deptId !="")
+                    url+=`&deptId=${this.deptId}`
+                if(this.page !="")
+                    url+=`&page=${this.page}`
+                if(this.pageSize !="")
+                    url+=`&pageSize=${this.pageSize}`
+                axios.get(url,config).then((result)=>{
+                    this.prods = result.data.data.data;
+                })
 
+            },
+            prodDelete:function(){
+                var config = {
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.delete(`http://localhost:8080/prod/${this.prodId}`,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("刪除成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            insertProd:function(){
+                var config ={
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                };
+                var obj = {
+                    name:this.name,
+                    departmentId:this.deptId
+                };
+                var json = JSON.stringify(obj);
+                axios.post(`http://localhost:8080/prod`,json,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("新增成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            modifyProd:function(){
+                var config ={
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                };
+                var obj = {
+                    name:this.name,
+                    deptId:this.deptId
+                };
+                var json = JSON.stringify(obj);
+                axios.put(`http://localhost:8080/prod`,json,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("修改成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            }
         }
     })
     new Vue({
         el:"#staffOption",
         data:{
+            entrydate:"",
+            position:"",
+            email:"",
+            username:"",
+            password:"",
+            identity:"",
             emps:[],
             name:"",
             deptId:"",
+            staffId:"",
             gender:"",
             page:"",
             pageSize:""
@@ -406,6 +601,9 @@
         methods:{
             showFindStaff:function (){
                 document.getElementById("findStaff").style.display="inline";
+                document.getElementById("deleteStaff").style.display="none";
+                document.getElementById("insertStaff").style.display="none";
+                document.getElementById("modifyStaff").style.display="none";
             },
             staffFind:function (){
                 var config = {
@@ -413,23 +611,129 @@
                         'token':store.getters.getToken
                     }
                 }
-                url = "http://localhost:8080/staff/"
+                url = "http://localhost:8080/staff/?"
                 if(this.name !="")
-                    url+=`?name=${this.name}`
+                    url+=`&name=${this.name}`
                 if(this.deptId !="")
-                    url+=`?deptId=${this.deptId}`
+                    url+=`&deptId=${this.deptId}`
                 if(this.gender !=""){
-                    url+=`?gender=${this.gender}`
+                    url+=`&gender=${this.gender}`
                 }
                 if(this.page !="")
-                    url+=`?page=${this.page}`
+                    url+=`&page=${this.page}`
                 if(this.pageSize !="")
-                    url+=`?pageSize=${this.pageSize}`
-                console.log(url)
+                    url+=`&pageSize=${this.pageSize}`
+                alert(url)
                  axios.get(url,config).then((result)=>{
                      this.emps = result.data.data.data;
-                     console.log(this.emps)
                  })
+            },
+            showDeleteStaff:function (){
+                document.getElementById("insertStaff").style.display="none";
+                document.getElementById("findStaff").style.display="none";
+                document.getElementById("deleteStaff").style.display="inline";
+                document.getElementById("modifyStaff").style.display="none";
+            },
+            staffDelete:function (){
+                var config ={
+                    headers: {
+                        'token':store.getters.getToken
+                    }
+                }
+                axios.delete(`http://localhost:8080/staff/${this.staffId}`,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("刪除成功")
+                    }
+                    else{
+                        alert(result.data.msg)
+                    }
+                })
+            },
+            showInsertStaff:function(){
+                document.getElementById("insertStaff").style.display="inline";
+                document.getElementById("deleteStaff").style.display="none";
+                document.getElementById("findStaff").style.display="none";
+                document.getElementById("modifyStaff").style.display="none";
+            },
+            staffInsert:function(){
+                var obj = {
+                    username:this.username,
+                    password:this.password,
+                    name:this.name,
+                    email:this.email,
+                    identity:this.identity,
+                    departmentId:this.deptId,
+                    gender:this.gender,
+                    entrydate:this.entrydate,
+                    position:this.position
+                }
+                var json = JSON.stringify(obj)
+                var config ={
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                }
+                axios.post(`http://localhost:8080/staff`,json,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("新增成功")
+                    }
+                    else{
+                        alert(result.data.msg,config)
+                    }
+                })
+            },
+            showModifyStaff:function (){
+                document.getElementById("modifyStaff").style.display="inline";
+                document.getElementById("findStaff").style.display="none";
+                document.getElementById("deleteStaff").style.display="none";
+                document.getElementById("insertStaff").style.display="none";
+            },
+            staffModify:function (){
+                var obj = {
+                    id:this.staffId,
+                }
+                if(this.username == "")
+                    obj.username = this.username
+                if(this.password == "")
+                    obj.password = this.password
+
+                if(this.email == "")
+                    obj.email = this.email
+
+                if(this.name == "")
+                    obj.name = this.name
+
+                if(this.identity == "")
+                    obj.identity = this.identity
+
+                if(this.deptId == "")
+                    obj.deptId = this.deptId
+
+                if(this.gender == "")
+                    obj.gender = this.gender
+
+                if(this.entrydate == "")
+                    obj.entrydate = this.entrydate
+                if(this.position == "")
+                    obj.position = this.position
+
+
+                var json = JSON.stringify(obj)
+                var config ={
+                    headers: {
+                        'token':store.getters.getToken,
+                        'Content-Type': 'application/json',
+                    }
+                }
+                axios.put(`http://localhost:8080/staff`,json,config).then(result=>{
+                    if(result.data.code == 1){
+                        alert("修改成功")
+                    }
+                    else{
+                        alert(result.data.msg,config)
+                    }
+                })
             }
         }
     })

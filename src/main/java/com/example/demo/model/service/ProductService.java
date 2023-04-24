@@ -1,5 +1,4 @@
 package com.example.demo.model.service;
-
 import com.example.demo.model.pojo.Page;
 import com.example.demo.model.pojo.Product;
 import com.example.demo.model.repository.ProductRepository;
@@ -10,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,5 +55,9 @@ public class ProductService {
     public void modify(Product prod){
         prod.setUpdateTime(LocalDateTime.now());
         productRepository.save(prod);
+    }
+    @Transactional
+    public void deleteById(Integer id){
+        productRepository.deleteById(id);
     }
 }

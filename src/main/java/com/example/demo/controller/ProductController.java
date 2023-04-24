@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.annotation.AuthCheckApi;
 import com.example.demo.model.pojo.Page;
 import com.example.demo.model.pojo.Product;
 import com.example.demo.model.pojo.Result;
@@ -27,14 +28,14 @@ public class ProductController {
                        @RequestParam(defaultValue = "10") Integer pageSize,
                        String name,Integer deptId
                        ){
-       Page result = productService.showPage(page-1,pageSize,name,deptId);
+        Page result = productService.showPage(page-1,pageSize,name,deptId);
         return Result.success(result);
     }
-    @GetMapping("/dept/{deptId}")
-    public Result deptProd(@PathVariable Integer deptId){
-        List<Product> list = productService.findByDeptId(deptId);
-        return Result.success(list);
-    }
+//    @GetMapping("/dept/{deptId}")
+//    public Result deptProd(@PathVariable Integer deptId){
+//        List<Product> list = productService.findByDeptId(deptId);
+//        return Result.success(list);
+//    }
     @PostMapping
     public Result prod(@RequestBody Product prod){
         productService.insert(prod);
@@ -43,6 +44,12 @@ public class ProductController {
     @PutMapping
     public Result modifyProd(@RequestBody Product prod){
         productService.modify(prod);
+        return Result.success();
+    }
+    @AuthCheckApi
+    @DeleteMapping("/{id}")
+    public Result deleteProd(@PathVariable Integer id){
+        productService.deleteById(id);
         return Result.success();
     }
 }
