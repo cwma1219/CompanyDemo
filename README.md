@@ -1,11 +1,15 @@
 # 練習-後端管理系統設計
 ---
+框架：Spring Boot , Spring Data JPA
+資料庫：MySQL
+
+---
 API皆使用REST風格設計
 
 
-| HTTP Request Method | 行為      | 
-| -------------       | -------- | 
-| GET                 | 查詢     | 
+| HTTP Request Method | 行為         | 
+| -------------       | -------     | 
+| GET                 | 查詢         | 
 | PUT                 | 修改         |
 | DELETE              | 刪除         |
 | POST                | 新增         |
@@ -16,19 +20,19 @@ API皆使用REST風格設計
 ---
 #### 回傳格式範例
 ```json
-{   
-    "code":1,           
-    "msg":"success",    
-    "data": {
-        "id": 1,
-        "name": "硬體部門",
-        "createTime": "2023-04-21T15:16:47",
-        "updateTime": "2023-04-21T15:16:47"
-    }
+{
+  "code":1,
+  "msg":"success",
+  "data": {
+    "id": 1,
+    "name": "硬體部門",
+    "createTime": "2023-04-21T15:16:47",
+    "updateTime": "2023-04-21T15:16:47"
+  }
 }
 ```
 ---
-## 部門管理 
+## 部門管理
 
 - 查詢全部部門
 ```java!
