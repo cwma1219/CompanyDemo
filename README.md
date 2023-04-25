@@ -1,6 +1,6 @@
 # 練習-後端管理系統設計
 ---
-框架：Spring Boot , Spring Data JPA
+框架：Spring Boot , Spring Data JPA  
 資料庫：MySQL
 
 ---
