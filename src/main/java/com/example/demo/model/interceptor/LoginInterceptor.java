@@ -20,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if("OPTIONS".equals(request.getMethod().toUpperCase()))
             return true;
         String jwt = request.getHeader("token");
-        if (jwt == null||jwt.equals("")){
+        if ("".equals(jwt)){
             String msg =  new JSONObject(Result.error("NOT_LOGIN")).toString();
             response.getWriter().write(msg);
             return false;
