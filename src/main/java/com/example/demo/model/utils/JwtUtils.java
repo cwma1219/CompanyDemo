@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.Map;
 public class JwtUtils {
+    private JwtUtils(){}
     private static String key = "ferji34fesfreew";
     private static Long expire = 36000L*1000L;
     public static String getJwt(Map<String, Object> claims){

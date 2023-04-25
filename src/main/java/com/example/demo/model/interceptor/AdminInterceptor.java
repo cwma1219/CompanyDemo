@@ -26,7 +26,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         String jwt = request.getHeader("token");
         Claims claims = JwtUtils.parseJwt(jwt);
         Integer position = Integer.parseInt(claims.get("position").toString());
-        if(position == 1){
+        if(position.equals(1)){
             return true;
         }
         else{
