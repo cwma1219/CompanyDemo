@@ -30,7 +30,7 @@ API皆使用REST風格設計
   }
 }
 ```
-前端只需根據此格式進行分析並處理，static/index.html為前端Web測試
+前端只需根據此格式進行分析並處理，stc/main/resources/static/index.html為前端Web測試
 
 ---
 ## 部門管理
