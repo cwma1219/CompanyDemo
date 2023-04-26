@@ -26,7 +26,6 @@ public class StaffService {
         Staff staff = staffRepository.findById(id).get();
         return staff;
     }
-
     public Page showPage(Integer page, Integer pageSize, String name, Short gender,Integer deptId) {
         Specification<Staff> spec = new Specification<Staff>() {
             @Override
